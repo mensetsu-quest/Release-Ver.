@@ -1,0 +1,6 @@
+google.cloud.storage
+google.cloud.speech
+audio_recorder_streamlit
+gspread
+oauth2client
+google-api-python-client
