@@ -107,7 +107,7 @@ def countdown_answer():
 
         time.sleep(1)
         if secs == 1:
-            text_timeout = "時間切れです。リロードして再挑戦してください  \n※注意※　timeout前に録音を完了していた場合はそのまま少々お待ちください"
+            text_timeout = "時間切れですが、そのまま継続して録音可能です。  \n※注意※　timeout前に録音を完了していた場合はそのまま少々お待ちください"
             return text_timeout
 
 def google_spread_CAL(list):
@@ -173,7 +173,7 @@ def is_valid_email(email):
 st.title('ケース面接Quest')
 st.info('パソコンおよび安定した通信環境での実施を推奨します')
 st.write('ケース面接の練習ができるアプリです。')
-st.text("<利用手順> \n① 「さっそくTry!」ボタンを押してください　\n② 練習したいファーム種別と問題を選択して「検討を開始する」ボタンを押してください  \n③ 5分間の検討時間の後、回答（音声録音）に移行します  \n④ 録音アイコンをクリックして回答を録音してください　\n⑤ Feedbackを希望する場合、「Feedbackを希望する」を選択して「Submit」ボタンを押してください  \n⑥ 入力されたメールアドレス宛に届く決済案内に沿って、決済を行ってください　\n⑦ 決済後5日以内に、現役コンサルタントのFeedbackをメールにて送付します！！")
+st.text("<利用手順> \n① 「さっそくTry!」ボタンを押してください　\n② 練習したいファーム種別と問題を選択して「検討を開始する」ボタンを押してください  \n③ 5分間の検討時間の後、回答（音声録音）に移行します  \n④ 録音アイコンをクリックして回答を録音してください　\n⑤ Feedbackを希望する場合、「Feedbackを希望する」を選択して「Submit」ボタンを押してください  \n⑥ 表示される決済リンクから決済を行ってください　\n⑦ 決済完了後5日以内に、Feedbackシート・録音データをメールにて送付します！！")
 
 if "state" not in st.session_state:
    st.session_state["state"] = 0
@@ -273,7 +273,7 @@ with st.form("form1"):
     
     fb_request = st.radio(\
         "本提出の確認　※必須",
-        ("現役コンサルタントからのFeedbackを希望する（2,000円／決済の案内に遷移します）", "Feedbackを希望しない（画面が終了します）")
+        ("Feedbackを希望する（2,000円）", "Feedbackを希望しない")
         )
     if fb_request == "Feedbackを希望しない（画面が終了します）":
         fb_flag = "0"
@@ -346,9 +346,17 @@ try:
                 gmail(email)
                 
             if fb_flag == "1":
-                st.info('回答が提出されました。"12時間以内"に入力のメールアドレス宛に決済URLを送付します。')
-                st.info('※注意※  \n決済が完了しなければ、Feedbackは送付されません。')
-                st.info('※問い合わせ先※  \nmensetsu.quest.hagukumi@gmail.com')
+                st.warning('回答が提出されました。\n24時間以内に以下のリンクより決済を完了してください。\nhttps://buy.stripe.com/28odSdcdlf48c8MdQQ')
+                text = """
+                ※注意※
+                決済リンクで入力するメールアドレスは、上記のメールアドレスと同一としてください。
+                決済完了後5日以内に、Feedbackシート・録音データの2点が入力アドレス宛に届きます。
+
+                ※問い合わせ先※
+                mensetsu.quest.hagukumi@gmail.com
+                """
+                st.markdown(text.replace("\n", "<br>"), unsafe_allow_html=True)
+
                 upload_blob_from_memory(bucket_name, contents, destination_blob_name)
                 transcript = transcript(gcs_uri)
                 text = '。\n'.join(transcript)
